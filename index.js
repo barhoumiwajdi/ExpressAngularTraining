@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan');
 const User = require('./Models/User');
+const Client = require('./Models/Client');
 
 
 require(('./Config/Connect'))
@@ -32,12 +33,28 @@ app.post('/enroll', async (req, res) => {
     res.status(401).send(data)
 
 })
+app.post('/register', async (req, res) => {
+    try {
+
+        const data = await Client.create(req.body)
+        console.log('data has been received in back end')
+        res.status(200).send(data)
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).send(error)
+    }
+
+
+})
 app.get('/enroll', async (req, res) => {
     const data = await User.find()
     res.status(200).send(data)
 })
+const AutRoutes = require('./Routes/UserRoutes')
+app.use('/api', AutRoutes)
 // End route section
 
 app.listen(process.env.port || port, function () {
-    console.log(`Backend server start on port ${port}`);
+    console.log(`Backend server start on port ${port} `);
 });
